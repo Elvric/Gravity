@@ -117,13 +117,19 @@ def simulation():
             return -1
 
 def clear():
+    '''
+    Clear function
+    '''
     for entry in entries:
-        entry.delete(0,END)
+        entry.delete(0, END)
 
 def save():
+    '''
+    Save function
+    '''
     global mempty
     try:
-        nplanet = planet(int(x.get()), int(y.get()), int(sx.get()), int(sy.get()), int(m.get()), color.get())
+        nplanet = Planet(int(x.get()), int(y.get()), int(sx.get()), int(sy.get()), int(m.get()), color.get())
         mempty.append(nplanet)
     except:
         pass
@@ -222,14 +228,14 @@ saveb.grid(column=3, row=2)
 
 
 
-m = Entry(canvas1)
+m = Entry(frame)
 m.grid(column=0, row=3)
 m.insert(0, "30")
 
-color = Entry(canvas1)
+color = Entry(frame)
 color.insert(0, "red")
 color.grid(column=1, row=3)
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv))
+    sys.exit(main())
