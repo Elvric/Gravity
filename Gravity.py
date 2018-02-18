@@ -8,7 +8,6 @@ from tkinter import *
 import math
 import time
 import json
-import os
 import threading as th
 
 
