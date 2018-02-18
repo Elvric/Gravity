@@ -136,9 +136,9 @@ def simulation():
             for p in planets:
                 p.move(planets)
             root.update()
-            time.sleep(0.001)
+            time.sleep(1/slide_speed.get())
         except:
-            return -1
+            return
 
 def clear():
     '''
@@ -277,7 +277,9 @@ savfil.grid(column=3, row=3)
 recfil = Button(frame, text="Load data", command=recover_from_file)
 recfil.grid(column=1, row=4)
 
-
+slide_speed = Scale(frame,from_=1, to=100, orient=HORIZONTAL, length=300)
+slide_speed.set(1000)
+slide_speed.grid()
 
 m = Entry(frame)
 m.grid(column=0, row=3)
@@ -286,6 +288,7 @@ m.insert(0, "30")
 color = Entry(frame)
 color.insert(0, "red")
 color.grid(column=1, row=3)
+
 
 
 if __name__ == "__main__":
