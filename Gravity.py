@@ -238,59 +238,60 @@ def main():
 
 
 restart = Button(frame, text="Restart", command=main)
-restart.grid()
+restart.grid(column=1)
 
 addp = Button(frame, text="Add Planet", command=addplanet)
-addp.grid(column=1,row=0)
+addp.grid(column=4,row=0)
 
 x = Entry(frame)
 x.insert(0, "200")
-x.grid(column=0, row=1)
+x.grid(column=1, row=1)
 y = Entry(frame)
 y.insert(0, "100")
-y.grid(column=1, row=1)
+y.grid(column=4, row=1)
+
+Label(frame,text="x").grid(column=0,row=1)
+Label(frame,text="y").grid(column=3,row=1)
 
 sx = Entry(frame)
 sx.insert(0, "1")
-sx.grid(column=0, row=2)
+sx.grid(column=1, row=2)
 
 sy = Entry(frame)
-sy.grid(column=1, row=2)
+sy.grid(column=4, row=2)
 sy.insert(0, "2")
 
+Label(frame,text="sx").grid(column=0,row=2)
+Label(frame,text="sy").grid(column=3,row=2)
+
 m = Entry(frame)
-m.grid(column=0, row=3)
+m.grid(column=1, row=3)
 m.insert(0, "30")
 
 color = Entry(frame)
 color.insert(0, "red")
-color.grid(column=1, row=3)
+color.grid(column=4, row=3)
+
+Label(frame,text="mass").grid(column=0,row=3)
+Label(frame,text="color").grid(column=3,row=3)
 
 entries = [x, y, sx, sy, m, color]
 
 clear = Button(frame, text="clear", command=clear)
-clear.grid()
+clear.grid(column=1)
 
 saveb = Button(frame, text="save", command=save)
-saveb.grid(column=3, row=1)
+saveb.grid(column=5, row=1)
 
 savfil = Button(frame, text="save data", command=save_planets)
-savfil.grid(column=3, row=3)
+savfil.grid(column=5, row=3)
 
 recfil = Button(frame, text="Load data", command=recover_from_file)
-recfil.grid(column=1, row=4)
+recfil.grid(column=4, row=4)
 
-slide_speed = Scale(frame,from_=1, to=100, orient=HORIZONTAL, length=300)
+slide_speed = Scale(frame,from_=1, to=100, orient=HORIZONTAL, length=200)
 slide_speed.set(1000)
-slide_speed.grid()
-
-m = Entry(frame)
-m.grid(column=0, row=3)
-m.insert(0, "30")
-
-color = Entry(frame)
-color.insert(0, "red")
-color.grid(column=1, row=3)
+slide_speed.grid(row=4,column=2)
 
 
 
