@@ -8,10 +8,14 @@ from tkinter import *
 import math
 import time
 import json
+import os
 import threading as th
 
 
 root = Tk()
+
+def jdefault(o):
+    return o.__dict__
 # Initiate the window and the canvas that will hold the planets
 planets = []
 entries = []
@@ -85,7 +89,25 @@ class Planet():
 
         return
 
+    def object_decoder(obj):
+        '''
+        Object decoder method
+        '''
+        saved_planet = planet(int(obj['x']), int(obj['y']), int(obj["sx"]),
+                              int(obj["sy"]), int(obj["m"]), obj["color"])
+        return saved_planet
 
+    def object_encoder(self):
+        '''
+        Object encoder method
+        '''
+        planet_json = json.dumps(self, default=lambda o: o.__dict__,
+                                 sort_keys=False, indent=-1)
+        coord = self.cord()
+        coord = ' \"x\": %d, \"y\": %d, ' % (coord[0],coord[1])
+        coord = str(coord)[1:-1]
+        planet_json = planet_json[:1] + coord + planet_json[1:]
+        return planet_json
 # TODO
 def fuse(planet1, planet2):
     '''
@@ -161,9 +183,30 @@ def addplanet():
             planets.append(p)
         mempty = []
 
+def save_planets():
+    file = open("data.json", "r")
+    str= file.read()
+    file = open("data.json", "w")
+    file.write("")
+    file = open("data.json", "a")
+    str=str[:-1]
+    file.write(str)
+    for p in mempty:
+        file.write(",\n")
+        file.write(p.object_encoder())
+    file.write("]")
+    file.close()
 
-
-
+def recover_from_file():
+        global canvas
+        global planets
+        file = open("data.json", "r")
+        str = file.read()
+        data=json.loads(str, object_hook=planet.object_decoder)
+        file.close()
+        for p in data:
+            canvas.itemconfig(p.planet,state="normal")
+            planets.append(p)
 
 def reset():
     '''
@@ -224,7 +267,13 @@ clear = Button(frame, text="clear", command=clear)
 clear.grid()
 
 saveb = Button(frame, text="save", command=save)
-saveb.grid(column=3, row=2)
+saveb.grid(column=3, row=1)
+
+savfil = Button(frame, text="save data", command=save_planets)
+savfil.grid(column=3, row=3)
+
+recfil = Button(frame, text="Load data", command=recover_from_file)
+recfil.grid(column=1, row=4)
 
 
 
