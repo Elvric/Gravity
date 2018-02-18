@@ -7,15 +7,19 @@ import os, sys
 from tkinter import *
 import math
 import time
+import json
 import threading as th
 
 
 root = Tk()
 # Initiate the window and the canvas that will hold the planets
 planets = []
+entries = []
+mempty = []
 canvas = Canvas(root, bg='black', width=1000, height=500)
 canvas.pack()
-
+frame = Frame(root, bg='white', width=700, height=500)
+frame.pack()
 
 class Planet():
     '''
@@ -28,10 +32,10 @@ class Planet():
         self.sx = sx
         self.sy = sy
         self.m = m
-        self.planet = canvas.create_oval(x-m/2, y-m/2, x+m/2, y+m/2, fill=color)
+        self.planet = canvas.create_oval(x-m/2, y-m/2, x+m/2, y+m/2, fill=color, state="hidden")
         self.color = color
 
-    def move(self, planets):
+    def move(self,planets):
         '''
         Move planet method
         '''
@@ -100,6 +104,9 @@ def simulation():
     World simulation function
     '''
     global planets
+    global canvas
+    for p in planets:
+        canvas.itemconfig(p.planet, state="normal")
     while True:
         try:
             for p in planets:
@@ -109,15 +116,48 @@ def simulation():
         except:
             return -1
 
+def clear():
+    for entry in entries:
+        entry.delete(0,END)
+
+def save():
+    global mempty
+    try:
+        nplanet = planet(int(x.get()), int(y.get()), int(sx.get()), int(sy.get()), int(m.get()), color.get())
+        mempty.append(nplanet)
+    except:
+        pass
+
 
 def addplanet():
     '''
     Add a planet function
     '''
-    nplanet = Planet(int(x.get()), int(y.get()), int(sx.get()), int(sy.get()),
-                     int(m.get()), color.get())
+    global canvas
+    global mempty
     global planets
-    planets.append(nplanet)
+    try:
+        nplanet = Planet(int(x.get()), int(y.get()), int(sx.get()), int(sy.get()),
+                         int(m.get()), color.get())
+        planets.append(nplanet)
+        canvas.itemconfig(nplanet.planet, state="normal")
+        for p in mempty:
+            if p.cord() == [int(x.get()), int(y.get())]:
+                canvas.delete(p.planet)
+                continue
+            canvas.itemconfig(p.planet, state="normal")
+            planets.append(p)
+
+        mempty = []
+    except:
+        for p in mempty:
+            canvas.itemconfig(p.planet, state="normal")
+            planets.append(p)
+        mempty = []
+
+
+
+
 
 def reset():
     '''
@@ -128,46 +168,59 @@ def reset():
 
 
 # Initialize the sun
-def main(args):
+def main():
     '''
     Main function
     '''
+    sun = Planet(500, 250, 0, 0, 100, "yellow")
     global planets
     reset()
     planets = []
-    sun = Planet(500, 250, 0, 0, 100, "yellow")
     planets = [sun]
     simulation()
-    # earth = Planet(250, 250, 1, 2, 49, "blue")
-    # earth1 = Planet(1000, 1000, -3, -5, 20, "red")
-
+    # earth = planet(250, 250, 1, 2, 49, "blue")
+    # earth1 = planet(1000, 1000, -3, -5, 20, "red")
     return 0
 
 
-canvas1 = Canvas(root, bg='white', width=700, height=500)
-canvas1.pack()
-
-restart = Button(canvas1, text="Restart", command=main)
+restart = Button(frame, text="Restart", command=main)
 restart.grid()
 
-addp = Button(canvas1, text="Add Planet", command=addplanet)
-addp.grid(column=1, row=0)
+addp = Button(frame, text="Add Planet", command=addplanet)
+addp.grid(column=1,row=0)
 
-x = Entry(canvas1)
-x.insert(0,"200")
+x = Entry(frame)
+x.insert(0, "200")
 x.grid(column=0, row=1)
-
-y = Entry(canvas1)
+y = Entry(frame)
 y.insert(0, "100")
 y.grid(column=1, row=1)
 
-sx = Entry(canvas1)
+sx = Entry(frame)
 sx.insert(0, "1")
 sx.grid(column=0, row=2)
 
-sy = Entry(canvas1)
+sy = Entry(frame)
 sy.grid(column=1, row=2)
 sy.insert(0, "2")
+
+m = Entry(frame)
+m.grid(column=0, row=3)
+m.insert(0, "30")
+
+color = Entry(frame)
+color.insert(0, "red")
+color.grid(column=1, row=3)
+
+entries = [x, y, sx, sy, m, color]
+
+clear = Button(frame, text="clear", command=clear)
+clear.grid()
+
+saveb = Button(frame, text="save", command=save)
+saveb.grid(column=3, row=2)
+
+
 
 m = Entry(canvas1)
 m.grid(column=0, row=3)
