@@ -14,7 +14,11 @@ import threading as th
 root = Tk()
 
 def jdefault(o):
+    '''
+    Get object dictionary function
+    '''
     return o.__dict__
+
 # Initiate the window and the canvas that will hold the planets
 planets = []
 entries = []
