@@ -13,12 +13,6 @@ import threading as th
 
 root = Tk()
 
-def jdefault(o):
-    '''
-    Get object dictionary function
-    '''
-    return o.__dict__
-
 # Initiate the window and the canvas that will hold the planets
 planets = []
 entries = []
@@ -64,7 +58,7 @@ class Planet():
         Force method
         
         Using the law of attraction of the universe
-            '''
+        '''
         global planets
         if self is other_planet:
             return 0
@@ -80,7 +74,8 @@ class Planet():
         difference = list(map(lambda x1,x2: x1-x2, self_location, other_location))
         d = 1.0 * difference[0] ** 2 + difference[1] ** 2
         adjacent = math.sqrt(d)
-        if d==0:
+        min_distance = 20
+        if d <= min_distance:
             return 1
         gravity = (self.m * other_planet.m) / d
 
@@ -94,6 +89,7 @@ class Planet():
 
         return 0
 
+    @staticmethod
     def object_decoder(obj):
         '''
         Object decoder class function
@@ -109,11 +105,12 @@ class Planet():
         planet_json = json.dumps(self, default=lambda o: o.__dict__,
                                  sort_keys=False, indent=-1)
         coord = self.coord()
-        coord = ' \"x\": %d, \"y\": %d, ' % (coord[0],coord[1])
+        coord = ' "x": %d, "y": %d, ' % (coord[0],coord[1])
         coord = str(coord)[1:-1]
         planet_json = planet_json[:1] + coord + planet_json[1:]
         return planet_json
-# TODO
+
+
 def fuse(planet1, planet2):
     '''
     Fuse two planets function
@@ -152,11 +149,12 @@ def clear():
 
 def save():
     '''
-    Save function
+    Save planets function
     '''
     global mempty
     try:
-        nplanet = Planet(int(x.get()), int(y.get()), int(sx.get()), int(sy.get()), int(m.get()), color.get())
+        nplanet = Planet(int(x.get()), int(y.get()), int(sx.get()), int(sy.get()),
+                         int(m.get()), color.get())
         mempty.append(nplanet)
     except:
         pass
@@ -175,7 +173,7 @@ def addplanet():
         planets.append(nplanet)
         canvas.itemconfig(nplanet.planet, state="normal")
         for p in mempty:
-            if p.cord() == [int(x.get()), int(y.get())]:
+            if p.coord() == [int(x.get()), int(y.get())]:
                 canvas.delete(p.planet)
                 continue
             canvas.itemconfig(p.planet, state="normal")
@@ -190,14 +188,13 @@ def addplanet():
 
 def save_planets():
     '''
-    Save planet objects function
+    Save planet objects to JSON file function
     '''
     file = open("data.json", "r")
-    str= file.read()
+    str = file.read()
+    file.close()
     file = open("data.json", "w")
-    file.write("")
-    file = open("data.json", "a")
-    str=str[:-1]
+    str = str[:-1]
     file.write(str)
     for p in mempty:
         file.write(",\n")
@@ -207,7 +204,7 @@ def save_planets():
 
 def recover_from_file():
     '''
-    Load data from file function
+    Load data from JSON file function
     '''
     global canvas
     global planets
@@ -221,17 +218,17 @@ def recover_from_file():
 
 def reset():
     '''
-    Reset function
+    Reset planets function
     '''
     for p in planets:
         canvas.delete(p.planet)
 
 
-# Initialize the sun
 def main():
     '''
     Main function
     '''
+    # Initialize the sun
     sun = Planet(500, 250, 0, 0, 100, "yellow")
     global planets
     reset()
@@ -239,7 +236,7 @@ def main():
     planets = [sun]
     simulation()
     # earth = planet(250, 250, 1, 2, 49, "blue")
-    # earth1 = planet(1000, 1000, -3, -5, 20, "red")
+    # mars = planet(1000, 1000, -3, -5, 20, "red")
     return 0
 
 
@@ -247,7 +244,7 @@ restart = Button(frame, text="Restart", command=main)
 restart.grid(column=1)
 
 addp = Button(frame, text="Add Planet", command=addplanet)
-addp.grid(column=4,row=0)
+addp.grid(column=4, row=0)
 
 x = Entry(frame)
 x.insert(0, "200")
@@ -256,8 +253,8 @@ y = Entry(frame)
 y.insert(0, "100")
 y.grid(column=4, row=1)
 
-Label(frame,text="x").grid(column=0,row=1)
-Label(frame,text="y").grid(column=3,row=1)
+Label(frame, text="x").grid(column=0, row=1)
+Label(frame, text="y").grid(column=3, row=1)
 
 sx = Entry(frame)
 sx.insert(0, "1")
@@ -267,8 +264,8 @@ sy = Entry(frame)
 sy.grid(column=4, row=2)
 sy.insert(0, "2")
 
-Label(frame,text="sx").grid(column=0,row=2)
-Label(frame,text="sy").grid(column=3,row=2)
+Label(frame, text="sx").grid(column=0, row=2)
+Label(frame, text="sy").grid(column=3, row=2)
 
 m = Entry(frame)
 m.grid(column=1, row=3)
@@ -278,8 +275,8 @@ color = Entry(frame)
 color.insert(0, "red")
 color.grid(column=4, row=3)
 
-Label(frame,text="mass").grid(column=0,row=3)
-Label(frame,text="color").grid(column=3,row=3)
+Label(frame, text="mass").grid(column=0, row=3)
+Label(frame, text="color").grid(column=3, row=3)
 
 entries = [x, y, sx, sy, m, color]
 
@@ -297,8 +294,7 @@ recfil.grid(column=4, row=4)
 
 slide_speed = Scale(frame,from_=1, to=100, orient=HORIZONTAL, length=200)
 slide_speed.set(1000)
-slide_speed.grid(row=4,column=2)
-
+slide_speed.grid(row=4, column=2)
 
 
 if __name__ == "__main__":
