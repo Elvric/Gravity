@@ -233,7 +233,6 @@ def main():
     reset()
     planets = []
     planets = [sun]
-    # root.protocol("WM_DELETE_WINDOW", lambda: exit(root.destroy()))
     root.after(0, simulation)
     root.mainloop()
     # earth = planet(250, 250, 1, 2, 49, "blue")
