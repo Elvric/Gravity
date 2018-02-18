@@ -19,11 +19,4 @@
 "m": 30,
 "planet": 4,
 "color": "pink"
-},
-{"x": 200, "y": 100,
-"sy": 2,
-"sx": 1,
-"color": "red",
-"m": 30,
-"planet": 23
 }]

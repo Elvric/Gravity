@@ -61,15 +61,15 @@ class Planet():
         Force method
         
         Using the law of attraction of the universe
-        '''
-
+            '''
+        global planets
         if self is other_planet:
-            return
+            return 0
 
         # Ensures that the gravity and speed vectors are in the right direction
         if self.m < other_planet.m:
             other_planet.force(self)
-            return
+            return 0
 
         # Get the distance and calculate the mid gravity using m1*m2/d^2
         self_location = self.coord()
@@ -77,6 +77,8 @@ class Planet():
         difference = list(map(lambda x1,x2: x1-x2, self_location, other_location))
         d = 1.0 * difference[0] ** 2 + difference[1] ** 2
         adjacent = math.sqrt(d)
+        if d==0:
+            return 1
         gravity = (self.m * other_planet.m) / d
 
         # Obtain the acceleration vectors
@@ -87,7 +89,7 @@ class Planet():
         other_planet.sx += ax
         other_planet.sy += ay
 
-        return
+        return 0
 
     def object_decoder(obj):
         '''
