@@ -8,7 +8,6 @@ from tkinter import *
 import math
 import time
 import json
-import threading as th
 
 
 root = Tk()
@@ -138,7 +137,7 @@ def simulation():
             root.update()
             time.sleep(1/slide_speed.get())
         except:
-            return
+            exit(0)
 
 def clear():
     '''
@@ -234,7 +233,9 @@ def main():
     reset()
     planets = []
     planets = [sun]
-    simulation()
+    # root.protocol("WM_DELETE_WINDOW", lambda: exit(root.destroy()))
+    root.after(0, simulation)
+    root.mainloop()
     # earth = planet(250, 250, 1, 2, 49, "blue")
     # mars = planet(1000, 1000, -3, -5, 20, "red")
     return 0
