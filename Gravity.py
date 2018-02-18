@@ -189,6 +189,9 @@ def addplanet():
         mempty = []
 
 def save_planets():
+    '''
+    Save planet objects function
+    '''
     file = open("data.json", "r")
     str= file.read()
     file = open("data.json", "w")
@@ -203,15 +206,18 @@ def save_planets():
     file.close()
 
 def recover_from_file():
-        global canvas
-        global planets
-        file = open("data.json", "r")
-        str = file.read()
-        data = json.loads(str, object_hook=Planet.object_decoder)
-        file.close()
-        for p in data:
-            canvas.itemconfig(p.planet, state="normal")
-            planets.append(p)
+    '''
+    Load data from file function
+    '''
+    global canvas
+    global planets
+    file = open("data.json", "r")
+    str = file.read()
+    data = json.loads(str, object_hook=Planet.object_decoder)
+    file.close()
+    for p in data:
+        canvas.itemconfig(p.planet, state="normal")
+        planets.append(p)
 
 def reset():
     '''
