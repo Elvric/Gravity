@@ -1,12 +1,13 @@
 from tkinter import *
 import math
 import time
-
+import threading as th
+root = Tk()
 # Initiate the window and the canvas that will hold the planets
 planets=[]
-root = Tk()
 canvas = Canvas(root,bg='black', width=1000, height=500)
 canvas.pack()
+
 
 # Object keeping track of the speed vector and mass
 class planet():
@@ -52,12 +53,8 @@ class planet():
         ay = difference[1] / adjacent * gravity
 
 # Ensures that the acceleration does not get too big
-        if self.m < other_planet.m:
-            self.sx = ax
-            self.sy = ay
-        else:
-            other_planet.sx += ax
-            other_planet.sy += ay
+        other_planet.sx += ax
+        other_planet.sy += ay
 
 
         return 0
@@ -76,12 +73,19 @@ def fuse(planet1,planet2):
     planets=[planet1]
 
 # Stimulates the word
-def stimulation(planets):
+def stimulation():
     while True:
-        for p in planets:
-            p.move(planets)
-        root.update()
-        time.sleep(0.001)
+        try:
+            global planets
+            for p in planets:
+                p.move(planets)
+            root.update()
+            time.sleep(0.001)
+        except:
+            return 0
+
+
+
 
 
 def addplanet():
@@ -89,18 +93,24 @@ def addplanet():
     global planets
     planets.append(nplanet)
 
+def reset():
+    for i in planets:
+        canvas.delete(i.planet)
 # Initialize the sun
 def main():
-    sun = planet(500, 250, 0, 0, 100, "yellow")
     global planets
+    reset()
+    planets=[]
+    sun = planet(500, 250, 0, 0, 100, "yellow")
     planets=[sun]
+    stimulation()
     # earth = planet(250, 250, 1, 2, 49, "blue")
     # earth1 = planet(1000, 1000, -3, -5, 20, "red")
-    stimulation(planets)
+
 canvas1 = Canvas(root,bg='white', width=700, height=500)
 canvas1.pack()
 
-restart = Button(canvas1,text="Restart")
+restart = Button(canvas1,text="Restart",command=main)
 restart.grid()
 
 addp = Button(canvas1,text="Add Planet", command=addplanet)
