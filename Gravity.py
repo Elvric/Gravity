@@ -91,9 +91,9 @@ class Planet():
 
     def object_decoder(obj):
         '''
-        Object decoder method
+        Object decoder class function
         '''
-        saved_planet = planet(int(obj['x']), int(obj['y']), int(obj["sx"]),
+        saved_planet = Planet(int(obj['x']), int(obj['y']), int(obj["sx"]),
                               int(obj["sy"]), int(obj["m"]), obj["color"])
         return saved_planet
 
@@ -103,7 +103,7 @@ class Planet():
         '''
         planet_json = json.dumps(self, default=lambda o: o.__dict__,
                                  sort_keys=False, indent=-1)
-        coord = self.cord()
+        coord = self.coord()
         coord = ' \"x\": %d, \"y\": %d, ' % (coord[0],coord[1])
         coord = str(coord)[1:-1]
         planet_json = planet_json[:1] + coord + planet_json[1:]
@@ -202,10 +202,10 @@ def recover_from_file():
         global planets
         file = open("data.json", "r")
         str = file.read()
-        data=json.loads(str, object_hook=planet.object_decoder)
+        data = json.loads(str, object_hook=Planet.object_decoder)
         file.close()
         for p in data:
-            canvas.itemconfig(p.planet,state="normal")
+            canvas.itemconfig(p.planet, state="normal")
             planets.append(p)
 
 def reset():
