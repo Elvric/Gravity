@@ -15,7 +15,7 @@ root = Tk()
 # Initiate the window and the canvas that will hold the planets
 planets = []
 entries = []
-mempty = []
+mem = []
 canvas = Canvas(root, bg='black', width=1000, height=500)
 canvas.pack()
 frame = Frame(root, bg='white', width=700, height=500)
@@ -30,10 +30,11 @@ class Planet():
     '''
 
     def __init__(self, x, y, sx, sy, m, color):
+        self.rad=m/4
         self.sx = sx
         self.sy = sy
         self.m = m
-        self.planet = canvas.create_oval(x-m/2, y-m/2, x+m/2, y+m/2, fill=color, state="hidden")
+        self.planet = canvas.create_oval(x-self.rad, y-self.rad, x+self.rad, y+self.rad, fill=color, state="hidden")
         self.color = color
 
     def move(self,planets):
@@ -50,7 +51,7 @@ class Planet():
         Get coordinates method
         '''
         dim = canvas.coords(self.planet)
-        coord = [dim[2]-self.m/2, dim[3]-self.m/2]
+        coord = [dim[2]-self.rad, dim[3]-self.rad]
         return coord
 
     def force(self, other_planet):
@@ -72,13 +73,12 @@ class Planet():
         self_location = self.coord()
         other_location = other_planet.coord()
         difference = list(map(lambda x1,x2: x1-x2, self_location, other_location))
-        d = 1.0 * difference[0] ** 2 + difference[1] ** 2
+        d = 1.0 * (difference[0] ** 2) + (difference[1] ** 2)
         adjacent = math.sqrt(d)
         min_distance = 20
         if d <= min_distance:
             return 1
         gravity = (self.m * other_planet.m) / d
-
         # Obtain the acceleration vectors
         ax = difference[0] / adjacent * gravity
         ay = difference[1] / adjacent * gravity
@@ -87,6 +87,11 @@ class Planet():
         other_planet.sx += ax
         other_planet.sy += ay
 
+        # difference = list(map(lambda x1, x2: x2 - x1, self_location, other_location))
+        # ax = difference[0] / adjacent * gravity
+        # ay = difference[1] / adjacent * gravity
+        # self.sx+= ax
+        # self.sy+=ay
         return 0
 
     @staticmethod
@@ -151,11 +156,11 @@ def save():
     '''
     Save planets function
     '''
-    global mempty
+    global mem
     try:
         nplanet = Planet(int(x.get()), int(y.get()), int(sx.get()), int(sy.get()),
                          int(m.get()), color.get())
-        mempty.append(nplanet)
+        mem.append(nplanet)
     except:
         pass
 
@@ -165,26 +170,26 @@ def addplanet():
     Add a planet function
     '''
     global canvas
-    global mempty
+    global mem
     global planets
     try:
         nplanet = Planet(int(x.get()), int(y.get()), int(sx.get()), int(sy.get()),
                          int(m.get()), color.get())
         planets.append(nplanet)
         canvas.itemconfig(nplanet.planet, state="normal")
-        for p in mempty:
+        for p in mem:
             if p.coord() == [int(x.get()), int(y.get())]:
                 canvas.delete(p.planet)
                 continue
             canvas.itemconfig(p.planet, state="normal")
             planets.append(p)
 
-        mempty = []
+        mem = []
     except:
-        for p in mempty:
+        for p in mem:
             canvas.itemconfig(p.planet, state="normal")
             planets.append(p)
-        mempty = []
+        mem = []
 
 def save_planets():
     '''
@@ -196,7 +201,7 @@ def save_planets():
     file = open("data.json", "w")
     str = str[:-1]
     file.write(str)
-    for p in mempty:
+    for p in mem:
         file.write(",\n")
         file.write(p.object_encoder())
     file.write("]")
