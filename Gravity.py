@@ -14,6 +14,7 @@ root = Tk()
 
 # Initiate the window and the canvas that will hold the planets
 val=True
+pauseval=False
 planets = []
 entries = []
 mem = []
@@ -127,6 +128,9 @@ class Planet():
         planet_json = planet_json[:1] + coord + planet_json[1:]
         return planet_json
 
+def pause_stimulation():
+    global pauseval
+    pauseval=not pauseval
 
 def fuse(planet1, planet2):
     '''
@@ -151,6 +155,8 @@ def simulation():
     while True:
         try:
             for p in planets:
+                if pauseval:
+                    break
                 p.move(planets)
             root.update()
             time.sleep(1/slide_speed.get())
@@ -263,7 +269,6 @@ def main():
     # Initialize the sun
     sun = Planet(500, 250, 0, 0, 100, "yellow")
     global planets
-    planets = []
     planets = [sun]
     simulation()
     # earth = planet(250, 250, 1, 2, 49, "blue")
@@ -281,6 +286,9 @@ slide_speed = Scale(frame, from_=1, to=100, orient=HORIZONTAL, length=200)
 recfil = Button(frame, text="Load data", command=recover_from_file)
 line_control= Button(frame, text="line controler", command=update_lines)
 line_control.grid(column=2,row=5)
+pause_control=Button(frame,text="Pause",command=pause_stimulation)
+pause_control.grid(row=4,column=2)
+
 
 restart.grid(column=1, row=0)
 addp.grid(column=4, row=0)
@@ -288,7 +296,7 @@ saveb.grid(column=5, row=1)
 savfil.grid(column=5, row=3)
 clear.grid(column=1, row=4)
 slide_speed.set(1000)
-slide_speed.grid(column=2, row=4)
+slide_speed.grid(column=2, row=3)
 recfil.grid(column=4, row=4)
 
 # Fields
