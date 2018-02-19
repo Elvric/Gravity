@@ -21,6 +21,7 @@ canvas.pack()
 frame = Frame(root, bg='white', width=700, height=500)
 frame.pack()
 
+
 class Planet():
     '''
     Planet class
@@ -240,61 +241,56 @@ def main():
     return 0
 
 
-restart = Button(frame, text="Restart", command=main)
-restart.grid(column=1)
+# Buttons
+restart = Button(frame, text="Restart simulation", command=main)
+addp = Button(frame, text="Add planet", command=addplanet)
+saveb = Button(frame, text="Save planet", command=save)
+savfil = Button(frame, text="Store saved data", command=save_planets)
+clear = Button(frame, text="Clear fields", command=clear)
+slide_speed = Scale(frame, from_=1, to=100, orient=HORIZONTAL, length=200)
+recfil = Button(frame, text="Load data", command=recover_from_file)
 
-addp = Button(frame, text="Add Planet", command=addplanet)
+restart.grid(column=1, row=0)
 addp.grid(column=4, row=0)
+saveb.grid(column=5, row=1)
+savfil.grid(column=5, row=3)
+clear.grid(column=1, row=4)
+slide_speed.set(1000)
+slide_speed.grid(column=2, row=4)
+recfil.grid(column=4, row=4)
 
+# Fields
 x = Entry(frame)
-x.insert(0, "200")
-x.grid(column=1, row=1)
 y = Entry(frame)
-y.insert(0, "100")
-y.grid(column=4, row=1)
-
-Label(frame, text="x").grid(column=0, row=1)
-Label(frame, text="y").grid(column=3, row=1)
-
 sx = Entry(frame)
-sx.insert(0, "1")
-sx.grid(column=1, row=2)
-
 sy = Entry(frame)
-sy.grid(column=4, row=2)
-sy.insert(0, "2")
-
-Label(frame, text="sx").grid(column=0, row=2)
-Label(frame, text="sy").grid(column=3, row=2)
-
 m = Entry(frame)
-m.grid(column=1, row=3)
-m.insert(0, "30")
-
 color = Entry(frame)
-color.insert(0, "red")
+
+x.grid(column=1, row=1)
+y.grid(column=4, row=1)
+sx.grid(column=1, row=2)
+sy.grid(column=4, row=2)
+m.grid(column=1, row=3)
 color.grid(column=4, row=3)
 
+# Default values
+x.insert(0, "200")
+y.insert(0, "100")
+sx.insert(0, "1")
+sy.insert(0, "2")
+m.insert(0, "30")
+color.insert(0, "red")
+
+# Labels
+Label(frame, text="x").grid(column=0, row=1)
+Label(frame, text="y").grid(column=3, row=1)
+Label(frame, text="sx").grid(column=0, row=2)
+Label(frame, text="sy").grid(column=3, row=2)
 Label(frame, text="mass").grid(column=0, row=3)
 Label(frame, text="color").grid(column=3, row=3)
 
 entries = [x, y, sx, sy, m, color]
-
-clear = Button(frame, text="clear", command=clear)
-clear.grid(column=1)
-
-saveb = Button(frame, text="save", command=save)
-saveb.grid(column=5, row=1)
-
-savfil = Button(frame, text="save data", command=save_planets)
-savfil.grid(column=5, row=3)
-
-recfil = Button(frame, text="Load data", command=recover_from_file)
-recfil.grid(column=4, row=4)
-
-slide_speed = Scale(frame,from_=1, to=100, orient=HORIZONTAL, length=200)
-slide_speed.set(1000)
-slide_speed.grid(row=4, column=2)
 
 
 if __name__ == "__main__":
