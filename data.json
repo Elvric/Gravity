@@ -18,12 +18,36 @@
 "sy": 2,
 "m": 30,
 "planet": 4,
-"color": "pink"
+"color": "white"
 },
 {"x": 300, "y": 100,
 "sx": 3,
 "sy": -2,
 "m": 50,
 "planet": 61,
+"color": "turquoise"
+},
+{"x": 800, "y": 100,
+"rad": 7.5,
+"sx": 1,
+"sy": 2,
+"m": 30,
+"planet": 8,
 "color": "purple"
+},
+{"x": 800, "y": 400,
+"rad": 7.5,
+"sx": 1,
+"sy": -2,
+"m": 30,
+"planet": 40,
+"color": "maroon"
+},
+{"x": 500, "y": 100,
+"rad": 2.5,
+"sx": 1,
+"sy": 2,
+"m": 5,
+"planet": 21,
+"color": "pink"
 }]

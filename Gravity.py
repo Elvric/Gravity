@@ -13,9 +13,11 @@ import json
 root = Tk()
 
 # Initiate the window and the canvas that will hold the planets
+val=True
 planets = []
 entries = []
 mem = []
+track=[]
 canvas = Canvas(root, bg='black', width=1000, height=500)
 canvas.pack()
 frame = Frame(root, bg='white', width=700, height=500)
@@ -30,7 +32,10 @@ class Planet():
     '''
 
     def __init__(self, x, y, sx, sy, m, color):
-        self.rad=m/4
+        if m <10:
+            self.rad=2.5
+        else:
+            self.rad= m/4
         self.sx = sx
         self.sy = sy
         self.m = m
@@ -41,7 +46,14 @@ class Planet():
         '''
         Move planet method
         '''
+        global track
         canvas.move(self.planet, self.sx, self.sy)
+        coord= self.coord()
+        line =canvas.create_oval(coord[0] - 1, coord[1] - 1,
+                           coord[0]+ 1,coord[1] + 1, fill=self.color)
+        if not val:
+            canvas.itemconfig(line,state="hidden")
+        track.append(line)
         for p in planets:
             p.force(self)
 
@@ -164,7 +176,16 @@ def save():
     except:
         pass
 
+def update_lines():
+    global val
+    if val:
+        for l in track:
+            canvas.itemconfig(l,state="hidden")
+    else:
+        for l in track:
+            canvas.itemconfig(l,state="normal")
 
+    val= not val
 def addplanet():
     '''
     Add a planet function
@@ -225,8 +246,14 @@ def reset():
     '''
     Reset planets function
     '''
-    for p in planets:
-        canvas.delete(p.planet)
+    canvas.delete(ALL)
+    global planets
+    global mem
+    global track
+    planets=[]
+    track=[]
+    mem=[]
+    main()
 
 
 def main():
@@ -236,24 +263,24 @@ def main():
     # Initialize the sun
     sun = Planet(500, 250, 0, 0, 100, "yellow")
     global planets
-    reset()
     planets = []
     planets = [sun]
-    root.after(0, simulation)
-    root.mainloop()
+    simulation()
     # earth = planet(250, 250, 1, 2, 49, "blue")
     # mars = planet(1000, 1000, -3, -5, 20, "red")
     return 0
 
 
 # Buttons
-restart = Button(frame, text="Restart simulation", command=main)
+restart = Button(frame, text="Restart simulation", command=reset)
 addp = Button(frame, text="Add planet", command=addplanet)
 saveb = Button(frame, text="Save planet", command=save)
 savfil = Button(frame, text="Store saved data", command=save_planets)
 clear = Button(frame, text="Clear fields", command=clear)
 slide_speed = Scale(frame, from_=1, to=100, orient=HORIZONTAL, length=200)
 recfil = Button(frame, text="Load data", command=recover_from_file)
+line_control= Button(frame, text="line controler", command=update_lines)
+line_control.grid(column=2,row=5)
 
 restart.grid(column=1, row=0)
 addp.grid(column=4, row=0)
