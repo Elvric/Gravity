@@ -1,9 +1,9 @@
-#!/usr/bin/env python
+
+
 # -*- coding: utf-8 -*-
 
 '''Gravity'''
 
-import os, sys
 from tkinter import *
 import math
 import time
@@ -13,11 +13,19 @@ import json
 root = Tk()
 
 # Initiate the window and the canvas that will hold the planets
-val=True
-pauseval=False
+lineshow=True
+pausesymbol=False
+
+# Stores the planets currently in the canvas
 planets = []
-entries = []
+
+# Stores the inputs of the entries
+#entries = []
+
+# Stores the planets before they are handled by the canvas
 mem = []
+
+# Stores the track path left by the planets
 track=[]
 canvas = Canvas(root, bg='black', width=1000, height=500)
 canvas.pack()
@@ -43,6 +51,9 @@ class Planet():
         self.planet = canvas.create_oval(x-self.rad, y-self.rad, x+self.rad, y+self.rad, fill=color, state="hidden")
         self.color = color
 
+    '''
+    Move the planet and create its trail path
+    '''
     def move(self,planets):
         '''
         Move planet method
@@ -50,9 +61,13 @@ class Planet():
         global track
         canvas.move(self.planet, self.sx, self.sy)
         coord= self.coord()
+
+        # Create an circle instance at the location of the planet
         line =canvas.create_oval(coord[0] - 1, coord[1] - 1,
                            coord[0]+ 1,coord[1] + 1, fill=self.color)
-        if not val:
+
+        # Hides the planets path
+        if not lineshow:
             canvas.itemconfig(line,state="hidden")
         track.append(line)
         for p in planets:
@@ -66,7 +81,10 @@ class Planet():
         dim = canvas.coords(self.planet)
         coord = [dim[2]-self.rad, dim[3]-self.rad]
         return coord
-
+    '''
+        Calculates changes in the planets velocity based on gravitational 
+        Attraction
+    '''
     def force(self, other_planet):
         '''
         Force method
@@ -92,6 +110,7 @@ class Planet():
         if d <= min_distance:
             return 1
         gravity = (self.m * other_planet.m) / d
+
         # Obtain the acceleration vectors
         ax = difference[0] / adjacent * gravity
         ay = difference[1] / adjacent * gravity
@@ -107,6 +126,7 @@ class Planet():
         # self.sy+=ay
         return 0
 
+    # JSON to object decoder
     @staticmethod
     def object_decoder(obj):
         '''
@@ -129,9 +149,10 @@ class Planet():
         return planet_json
 
 def pause_stimulation():
-    global pauseval
-    pauseval=not pauseval
+    global pausesymbol
+    pausesymbol=not pausesymbol
 
+# TODO
 def fuse(planet1, planet2):
     '''
     Fuse two planets function
@@ -144,18 +165,23 @@ def fuse(planet1, planet2):
     global planets
     planets = [planet1]
 
+
 def simulation():
     '''
     World simulation function
     '''
     global planets
     global canvas
+
+    # Displays the planets currently in the canvas
     for p in planets:
         canvas.itemconfig(p.planet, state="normal")
+
+    # Move planets and update the canvas
     while True:
         try:
             for p in planets:
-                if pauseval:
+                if pausesymbol:
                     break
                 p.move(planets)
             root.update()
@@ -170,6 +196,9 @@ def clear():
     for entry in entries:
         entry.delete(0, END)
 
+'''
+    Saving planets in memory before being stimulated
+'''
 def save():
     '''
     Save planets function
@@ -182,16 +211,23 @@ def save():
     except:
         pass
 
+'''
+Hidde or show the planets path
+'''
 def update_lines():
-    global val
-    if val:
+    global lineshow
+    if lineshow:
         for l in track:
             canvas.itemconfig(l,state="hidden")
     else:
         for l in track:
-            canvas.itemconfig(l,state="normal")
+            canvas.itemconfig(l,state="disabled")
 
-    val= not val
+    lineshow= not lineshow
+
+'''
+Displays the planet enter by the users in the Frame fields
+'''
 def addplanet():
     '''
     Add a planet function
@@ -205,6 +241,8 @@ def addplanet():
         planets.append(nplanet)
         canvas.itemconfig(nplanet.planet, state="normal")
         for p in mem:
+
+            # Ensures that no two planets spawn at the same location
             if p.coord() == [int(x.get()), int(y.get())]:
                 canvas.delete(p.planet)
                 continue
@@ -212,12 +250,17 @@ def addplanet():
             planets.append(p)
 
         mem = []
+
+    # If the fields are empty just retrieve data from mem
     except:
         for p in mem:
             canvas.itemconfig(p.planet, state="normal")
             planets.append(p)
         mem = []
 
+'''
+Save the planets instances in mem in the JSON file
+'''
 def save_planets():
     '''
     Save planet objects to JSON file function
@@ -234,6 +277,9 @@ def save_planets():
     file.write("]")
     file.close()
 
+'''
+Retrieve the planets from file and display them on the canvas
+'''
 def recover_from_file():
     '''
     Load data from JSON file function
@@ -282,7 +328,7 @@ addp = Button(frame, text="Add planet", command=addplanet)
 saveb = Button(frame, text="Save planet", command=save)
 savfil = Button(frame, text="Store saved data", command=save_planets)
 clear = Button(frame, text="Clear fields", command=clear)
-slide_speed = Scale(frame, from_=1, to=100, orient=HORIZONTAL, length=200)
+slide_speed = Scale(frame, from_=1, to=1000, orient=HORIZONTAL, length=200)
 recfil = Button(frame, text="Load data", command=recover_from_file)
 line_control= Button(frame, text="line controler", command=update_lines)
 line_control.grid(column=2,row=5)
